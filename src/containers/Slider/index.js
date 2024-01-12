@@ -8,12 +8,13 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
+    // Modification du sens du chevron pour afficher les mois dans l'ordre décroissant
+    new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
   );
   const nextCard = () => {
     setTimeout(
-      // Ajout d'un "- 1" à la taille du tableau 
-      () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),
+      // Modification "index + 1" pour supprimer l'élément "undefined" sur le length.
+      () => setIndex(index + 1 < byDateDesc?.length ? index + 1 : 0),
       5000
     );
   };
@@ -21,12 +22,11 @@ const Slider = () => {
     nextCard();
   });
   return (
-    <div className="SlideCardList">
+    <div className="SlideCardList">    
       {byDateDesc?.map((event, idx) => (
-        <div>
-          <div
-          // Modification de "key" pour que chaque image est un ID unique
-            key={event.id}
+        // Modification de "key" pour que chaque slide est un ID unique
+        <div key={event.date}>
+          <div            
             className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
             }`}
@@ -45,11 +45,13 @@ const Slider = () => {
             <div className="SlideCard__pagination">
               {byDateDesc.map((_, radioIdx) => (
                 <input
-                  key={`${event.id}`}
+                // Changement de la key pour qu'elle corresponde à la slide afficher 
+                  key={_.date}
                   type="radio"
                   name="radio-button"
                   // Remplacement de "idx" par "index" pour indiquer sur quelle image on se trouve
                   checked={index === radioIdx}
+                  readOnly
                 />
               ))}
             </div>
